@@ -258,8 +258,19 @@ public class ShareUtil{
             }
         }
         let activityViewController = UIActivityViewController(activityItems: data, applicationActivities: nil)
-        UIApplication.topViewController()?.present(activityViewController, animated: true, completion: nil)
-        result(SUCCESS)
+        if let topViewController = UIApplication.topViewController() {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                activityViewController.modalPresentationStyle = .popover
+                let popver = activityViewController.popoverPresentationController
+                popver?.permittedArrowDirections = []
+                popver?.sourceRect = CGRect(x: topViewController.view.bounds.midX, y: topViewController.view.bounds.midY, width: 0, height: 0)
+                popver?.sourceView = topViewController.view
+            }
+            topViewController.present(activityViewController, animated: true, completion: nil)
+            result(SUCCESS)
+        } else {
+            result("No Share Top Controller")
+        }
     }
     
     
